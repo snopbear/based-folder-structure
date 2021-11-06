@@ -1,0 +1,74 @@
+navigateByUrl will exclude secondary routes or paramiter.  
+navigate will keep the secondary routes.
+
+--------------------
+   {path: 'orders/:id/items/:itemsId', }
+   {path: 'products/:id/edit', } // constant segment and variable segment  
+-------------------------
+
+
+What is the diffrence between router reuse and router reinitialize 
+
+--------------------------------
+Optional route paramter 
+------------------------
+it's not a part of route configuration
+
+    <a [routerLink]="['/welcome',{name:'productName', code:'010'}]" routerLinkActive="router-link-active" ></a>
+
+--------------------------------
+Query paramter 
+------------------------
+it's not a part of route configuration
+
+    <a
+      [routerLink]="['/welcome']"
+      [queryParams]="{ filterBy: 'er', show: true }"
+      routerLinkActive="router-link-active"
+    ></a>
+
+this.router.navigate(['details'],{
+  queryParams:{name:"assaf", code:"010"}
+})
+
+  this.listFilter =
+      this.activatedRoute.snapshot.queryParamMap.get('filterBy') || '';
+    this.showImage =
+      this.activatedRoute.snapshot.queryParamMap.get('showImage') === 'true';
+
+
+-------------------------------------
+read data from resolver 
+-----------------------
+    const resolvedData: ProductResolved =
+      this.activeRoute.snapshot.data['resolvedProductData'];
+
+   this.activeRoute.parent.data.subscribe((data) => {
+      if (this.productForm) {
+        this.productForm.reset();
+      }
+
+      this.product = data['resolvedData'].product;
+    });
+
+
+-----------------------
+secondary Route 
+----------------
+
+     <a       [routerLink]="[{outlets:{popup:['messages']}}]" ></a>
+
+
+    // Example of primary and secondary routing together
+    // this.router.navigate(['/login', {outlets: { popup: ['messages']}}]); // Does not work
+    // this.router.navigate([{outlets: { primary: ['login'], popup: ['messages']}}]); // Works
+
+
+
+        this.router.navigate([{ outlets: { popup: ['messages'] } }]); 
+
+
+
+        -------------------------
+
+        

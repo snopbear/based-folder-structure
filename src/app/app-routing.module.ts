@@ -18,6 +18,13 @@ const routes: Routes = [
     // canActivate: [AuthGuard],
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
+  {
+    path: 'reactive-form',
+    loadChildren: () =>
+      import('./reactive-form/reactive-form.module').then(
+        (m) => m.ReactiveFormModule
+      ),
+  },
 ];
 
 @NgModule({

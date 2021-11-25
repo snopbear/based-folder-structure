@@ -1,0 +1,336 @@
+<form [formGroup]="form" class="form-horizontal" (ngSubmit)="onSubmit()">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Create Employee</h3>
+    </div>
+    <div class="card-body">
+      <div class="form-group" [ngClass]="{ invalid: formErrors.fullName }">
+        <label class="col-sm-2 control-label" for="fullName">Full Name</label>
+        <div class="col-sm-8">
+          <input
+            [ngClass]="{ text: formErrors.fullName }"
+            id="fullName"
+            type="text"
+            class="form-control"
+            formControlName="fullName"
+            autocomplete="off"
+            (blur)="logValidationErrors()"
+          />
+          <span class="text-danger" *ngIf="formErrors.fullName">
+            {{ formErrors.fullName }}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-2 control-label">Contact Preference</label>
+        <div class="col-md-8">
+          <label class="radio-inline">
+            <input
+              type="radio"
+              value="email"
+              formControlName="contactPreference"
+            />Email
+          </label>
+          <label class="radio-inline">
+            <input
+              type="radio"
+              value="phone"
+              formControlName="contactPreference"
+            />Phone
+          </label>
+        </div>
+      </div>
+
+      <div formGroupName="emailGroup">
+        <div class="form-group" [ngClass]="{ invalid: formErrors.email }">
+          <label class="col-sm-2 control-label" for="email">Email</label>
+          <div class="col-sm-8">
+            <input
+              [ngClass]="{ text: formErrors.email }"
+              id="email"
+              type="text"
+              class="form-control"
+              formControlName="email"
+              autocomplete="off"
+              (blur)="logValidationErrors()"
+            />
+          </div>
+          <span class="text-danger" *ngIf="formErrors.email">
+            {{ formErrors.email }}
+          </span>
+        </div>
+        <div
+          class="form-group"
+          [ngClass]="{
+            invalid: formErrors.confirmEmail || formErrors.emailGroup
+          }"
+        >
+          <label class="col-sm-2 control-label" for="confirmEmail"
+            >Confirm Email</label
+          >
+          <div class="col-sm-8">
+            <input
+              [ngClass]="{ text: formErrors.confirmEmail }"
+              id="confirmEmail"
+              type="text"
+              class="form-control"
+              formControlName="confirmEmail"
+              autocomplete="off"
+              (blur)="logValidationErrors()"
+            />
+          </div>
+
+          <span
+            class="help-block"
+            *ngIf="formErrors.confirmEmail || formErrors.emailGroup"
+          >
+            {{
+              formErrors.confirmEmail
+                ? formErrors.confirmEmail
+                : formErrors.emailGroup
+            }}
+          </span>
+        </div>
+      </div>
+      <div class="form-group" [ngClass]="{ invalid: formErrors.phone }">
+        <label class="col-sm-2 control-label" for="email">Phone</label>
+        <div class="col-sm-8">
+          <input
+            [ngClass]="{ text: formErrors.phone }"
+            id="phone"
+            type="text"
+            class="form-control"
+            formControlName="phone"
+            (blur)="logValidationErrors()"
+          />
+          <span class="text-danger" *ngIf="formErrors.phone">
+            {{ formErrors.phone }}
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group" [ngClass]="{ invalid: formErrors.password }">
+        <label class="col-sm-2 control-label" for="fullName">Password</label>
+        <div class="col-sm-8">
+          <input
+            [ngClass]="{ text: formErrors.password }"
+            id="password"
+            type="text"
+            class="form-control"
+            formControlName="password"
+            autocomplete="off"
+            (blur)="logValidationErrors()"
+          />
+          <span class="text-danger" *ngIf="formErrors.password">
+            {{ formErrors.password }}
+          </span>
+        </div>
+      </div>
+
+      <div
+        class="form-group"
+        [ngClass]="{ invalid: formErrors.confirmPassword }"
+      >
+        <label class="col-sm-2 control-label" for="fullName"
+          >Confirm Password</label
+        >
+        <div class="col-sm-8">
+          <input
+            [ngClass]="{ text: formErrors.confirmPassword }"
+            id="confirmPassword"
+            type="text"
+            class="form-control"
+            formControlName="confirmPassword"
+            autocomplete="off"
+            (blur)="logValidationErrors()"
+          />
+          <span class="text-danger" *ngIf="formErrors.confirmPassword">
+            {{ formErrors.confirmPassword }}
+          </span>
+        </div>
+      </div>
+
+      <hr />
+      <div class="form-group">
+        <div class="col-md-offset-2 col-md-4">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="addSkillButtonClick()"
+            [disabled]="form.get('skills').invalid"
+          >
+            Add Skill
+          </button>
+        </div>
+      </div>
+
+      <hr />
+
+      <div formArrayName="skills">
+        <div *ngIf="skillsControls && skillsControls.length">
+          <div *ngFor="let skill of skillsControls; let i = index">
+            <div [formGroupName]="i">
+              <hr *ngIf="i > 0" />
+              <div
+                class="form-group"
+                [ngClass]="{
+                  invalid:
+                    skill.get('skillName')?.touched &&
+                    skill.get('skillName')?.invalid
+                }"
+              >
+                <label
+                  class="col-sm-2 control-label"
+                  for="skillName"
+                  [attr.for]="'skillName' + i"
+                >
+                  Skill
+                </label>
+                <div class="col-sm-4">
+                  <input
+                    [class.text]="
+                      skill.get('skillName')?.touched &&
+                      skill.get('skillName')?.invalid
+                    "
+                    type="text"
+                    class="form-control"
+                    placeholder="Name"
+                    formControlName="skillName"
+                    [id]="'skillName' + i"
+                  />
+                  <span
+                    class="text-danger"
+                    *ngIf="
+                      skill.get('skillName')?.touched &&
+                      skill.get('skillName')?.errors?.required
+                    "
+                  >
+                    Skill Name is required
+                  </span>
+                </div>
+                <div class="col-sm-6" *ngIf="skillsControls.length > 1">
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm pull-right"
+                    title="Delete Skill"
+                    (click)="removeSkillGroup(i)"
+                  >
+                    <span class="glyphicon glyphicon-remove">X</span>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="form-group col-sm-4"
+                [ngClass]="{
+                  invalid:
+                    skill.get('experienceInYears')?.touched &&
+                    skill.get('experienceInYears')?.invalid
+                }"
+              >
+                <label
+                  class="col-sm-2 control-label"
+                  for="experienceInYears"
+                  [attr.for]="'experienceInYears' + i"
+                >
+                  Experience In Years
+                </label>
+                <input
+                  [class.text]="
+                    skill.get('experienceInYears')?.touched &&
+                    skill.get('experienceInYears')?.invalid
+                  "
+                  type="text"
+                  placeholder="Experience in Years"
+                  class="form-control"
+                  formControlName="experienceInYears"
+                  [id]="'experienceInYears' + i"
+                />
+                <span
+                  class="text-danger"
+                  *ngIf="
+                    skill.get('experienceInYears')?.touched &&
+                    skill.get('experienceInYears')?.errors?.required
+                  "
+                >
+                  Experience is required
+                </span>
+              </div>
+              <div
+                class="form-group"
+                [ngClass]="{
+                  invalid:
+                    skill.get('proficiency')?.touched &&
+                    skill.get('proficiency')?.invalid
+                }"
+              >
+                <label class="col-md-2 control-label">Proficiency</label>
+                <div class="col-md-8">
+                  <label class="radio-inline">
+                    <input
+                      id="proficiency"
+                      type="radio"
+                      value="beginner"
+                      formControlName="proficiency"
+                    />Beginner
+                  </label>
+                  <label class="radio-inline">
+                    <input
+                      id="proficiency"
+                      type="radio"
+                      value="intermediate"
+                      formControlName="proficiency"
+                    />Intermediate
+                  </label>
+                  <label class="radio-inline">
+                    <input
+                      id="proficiency"
+                      type="radio"
+                      value="advanced"
+                      formControlName="proficiency"
+                    />Advanced
+                  </label>
+                  <span
+                    class="help-block"
+                    *ngIf="
+                      skill.get('proficiency')?.errors?.required &&
+                      skill.get('proficiency')?.touched
+                    "
+                  >
+                    Proficiency is required
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary" [disabled]="form.invalid" type="submit">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <table border="1">
+    <tr>
+      <th style="padding: 10px">FormGroup</th>
+      <th style="padding: 10px">FormControl (fullName)</th>
+    </tr>
+    <tr>
+      <td style="padding: 10px">
+        touched : {{ form.touched }} <br />
+        dirty : {{ form.dirty }} <br />
+        valid : {{ form.valid }} <br />
+        Form Values : {{ form.value | json }}
+      </td>
+      <td style="padding: 10px">
+        touched : {{ form.get("fullName").touched }} <br />
+        dirty : {{ form.get("fullName").dirty }} <br />
+        valid : {{ form.get("fullName").valid }} <br />
+        FullName Value : {{ form.get("fullName").value }}
+      </td>
+    </tr>
+  </table>
+</form>
